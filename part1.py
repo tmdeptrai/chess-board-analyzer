@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
-import os
-os.makedirs('output_videos', exist_ok=True) #folder for output video
+import json
+
 
 # Read input from video
 cap = cv2.VideoCapture("./input_videos/echiquier_vide_1.avi")
@@ -105,12 +105,9 @@ def put_text_with_outline(img, text):
     
     x = (width - text_w) // 2  
     y = height - 20
-        
     pos = (x, y)
     
-    # Draw the outline of the text
     cv2.putText(img, text, pos, font, scale, (0, 0, 0), thickness_out, cv2.LINE_AA)
-    # Draw thinner yellow text over it (the inside)
     cv2.putText(img, text, pos, font, scale, (0, 255, 255), thickness_in, cv2.LINE_AA)
 
 def create_dashboard(img1, img2, img3, img4, size=(400, 400)):
@@ -124,7 +121,7 @@ def create_dashboard(img1, img2, img3, img4, size=(400, 400)):
     i4 = cv2.resize(img4, size)
     
     # Add the labels
-    put_text_with_outline(i1, "1. Original Video")
+    put_text_with_outline(i1, "1. Original Frame")
     put_text_with_outline(i2, "2. Edges Detection")
     put_text_with_outline(i3, "3. Corners Extraction")
     put_text_with_outline(i4, "4. Rectified Board")
@@ -137,6 +134,8 @@ def create_dashboard(img1, img2, img3, img4, size=(400, 400)):
     return grid
  
 # ================= Main program =====================
+
+corners = None
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -154,7 +153,11 @@ while cap.isOpened():
     out_edges.write(edges_bgr)
     
     # Extract corners of the 8x8 grid
-    corners = get_grid_corners(edges)
+    if corners is None: #This will be calculated for ONLY 1 TIME
+        corners = get_grid_corners(edges)
+        with open('./output_videos/part1_corners_coordinates.json','w') as f:
+            json.dump(corners.tolist(),f,indent=4)
+        print("SUCCESS: Corners coordinates saved to part1_corners_coordinates.json!")    
     
     if corners is not None:
         # Draw the detected corners
