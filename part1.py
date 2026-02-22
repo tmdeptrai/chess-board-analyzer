@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import json
 
-
 # Read input from video
 cap = cv2.VideoCapture("./input_videos/echiquier_vide_1.avi")
 if not cap.isOpened():
@@ -155,7 +154,7 @@ while cap.isOpened():
     # Extract corners of the 8x8 grid
     if corners is None: #This will be calculated for ONLY 1 TIME
         corners = get_grid_corners(edges)
-        with open('./output_videos/part1_corners_coordinates.json','w') as f:
+        with open('./corners_coordinates.json','w') as f:
             json.dump(corners.tolist(),f,indent=4)
         print("SUCCESS: Corners coordinates saved to part1_corners_coordinates.json!")    
     
@@ -181,7 +180,7 @@ while cap.isOpened():
         break
 
 #Save the dashboard to an image (pretty cool for the report)
-cv2.imwrite("./output_videos/part1_summary.png",dashboard)    
+cv2.imwrite("./figures/part1_summary.png",dashboard)    
 cap.release()
 out_rectified.release()
 out_edges.release()

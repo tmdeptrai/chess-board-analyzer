@@ -1,5 +1,12 @@
 *.avi
-
+# LaTeX auxiliary files
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.toc
+*.synctex.gz
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
